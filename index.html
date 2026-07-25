@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="Advanced Scientific Calculator with History, Themes, and Unit Conversion">
+    <title>Advanced Scientific Calculator</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧮 Advanced Calculator</h1>
+            <div class="header-controls">
+                <button id="themeToggle" class="theme-btn" title="Toggle Dark Mode">🌙</button>
+                <button id="historyBtn" class="history-btn" title="View History">📋</button>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="calculator">Calculator</button>
+            <button class="tab-btn" data-tab="scientific">Scientific</button>
+            <button class="tab-btn" data-tab="converter">Converter</button>
+            <button class="tab-btn" data-tab="memory">Memory</button>
+        </div>
+
+        <!-- Calculator Tab -->
+        <div id="calculator" class="tab-content active">
+            <div class="calculator">
+                <div class="display-container">
+                    <div id="history-display" class="history-display"></div>
+                    <input type="text" id="display" class="display" readonly>
+                </div>
+                <div class="buttons">
+                    <button class="btn clear" onclick="clearDisplay()">C</button>
+                    <button class="btn operator" onclick="appendOperator('/')">/</button>
+                    <button class="btn operator" onclick="appendOperator('*')">×</button>
+                    <button class="btn operator" onclick="deleteLast()">⌫</button>
+                    
+                    <button class="btn" onclick="appendNumber('7')">7</button>
+                    <button class="btn" onclick="appendNumber('8')">8</button>
+                    <button class="btn" onclick="appendNumber('9')">9</button>
+                    <button class="btn operator" onclick="appendOperator('-')">−</button>
+                    
+                    <button class="btn" onclick="appendNumber('4')">4</button>
+                    <button class="btn" onclick="appendNumber('5')">5</button>
+                    <button class="btn" onclick="appendNumber('6')">6</button>
+                    <button class="btn operator" onclick="appendOperator('+')">+</button>
+                    
+                    <button class="btn" onclick="appendNumber('1')">1</button>
+                    <button class="btn" onclick="appendNumber('2')">2</button>
+                    <button class="btn" onclick="appendNumber('3')">3</button>
+                    <button class="btn operator" onclick="toggleParentheses(')')">)</button>
+                    
+                    <button class="btn zero" onclick="appendNumber('0')">0</button>
+                    <button class="btn operator" onclick="appendOperator('.')">.</button>
+                    <button class="btn operator" onclick="toggleParentheses('(')">(</button>
+                    <button class="btn equals" onclick="calculate()">=</button>
+                </div>
+                <div class="extra-buttons">
+                    <button class="btn-small operator" onclick="appendOperator('%')">%</button>
+                    <button class="btn-small operator" onclick="calculatePercentage()">% of</button>
+                    <button class="btn-small operator" onclick="undoCalculation()">↶ Undo</button>
+                    <button class="btn-small operator" onclick="redoCalculation()">↷ Redo</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scientific Tab -->
+        <div id="scientific" class="tab-content">
+            <div class="calculator">
+                <div class="display-container">
+                    <div id="sci-history-display" class="history-display"></div>
+                    <input type="text" id="sci-display" class="display" readonly>
+                </div>
+                <div class="buttons scientific-buttons">
+                    <button class="btn" onclick="sciCalculate('sin')">sin</button>
+                    <button class="btn" onclick="sciCalculate('cos')">cos</button>
+                    <button class="btn" onclick="sciCalculate('tan')">tan</button>
+                    <button class="btn" onclick="sciCalculate('sqrt')">√</button>
+                    
+                    <button class="btn" onclick="sciCalculate('log')">log</button>
+                    <button class="btn" onclick="sciCalculate('ln')">ln</button>
+                    <button class="btn" onclick="sciCalculate('pow')">x^y</button>
+                    <button class="btn" onclick="sciCalculate('factorial')">n!</button>
+                    
+                    <button class="btn" onclick="sciAppendNumber('7')">7</button>
+                    <button class="btn" onclick="sciAppendNumber('8')">8</button>
+                    <button class="btn" onclick="sciAppendNumber('9')">9</button>
+                    <button class="btn operator" onclick="sciAppendOperator('/')">÷</button>
+                    
+                    <button class="btn" onclick="sciAppendNumber('4')">4</button>
+                    <button class="btn" onclick="sciAppendNumber('5')">5</button>
+                    <button class="btn" onclick="sciAppendNumber('6')">6</button>
+                    <button class="btn operator" onclick="sciAppendOperator('*')">×</button>
+                    
+                    <button class="btn" onclick="sciAppendNumber('1')">1</button>
+                    <button class="btn" onclick="sciAppendNumber('2')">2</button>
+                    <button class="btn" onclick="sciAppendNumber('3')">3</button>
+                    <button class="btn operator" onclick="sciAppendOperator('-')">−</button>
+                    
+                    <button class="btn zero" onclick="sciAppendNumber('0')">0</button>
+                    <button class="btn operator" onclick="sciAppendNumber('.')">.</button>
+                    <button class="btn operator" onclick="sciClearDisplay()">C</button>
+                    <button class="btn equals" onclick="sciCalculateResult()">=</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Converter Tab -->
+        <div id="converter" class="tab-content">
+            <div class="converter">
+                <div class="converter-section">
+                    <h3>Currency Converter</h3>
+                    <div class="converter-input">
+                        <input type="number" id="currencyAmount" placeholder="Amount" value="1">
+                        <select id="currencyFrom">
+                            <option value="USD">USD ($)</option>
+                            <option value="EUR">EUR (€)</option>
+                            <option value="GBP">GBP (£)</option>
+                            <option value="JPY">JPY (¥)</option>
+                            <option value="PKR">PKR (₨)</option>
+                        </select>
+                        <span>=</span>
+                        <select id="currencyTo">
+                            <option value="EUR">EUR (€)</option>
+                            <option value="USD">USD ($)</option>
+                            <option value="GBP">GBP (£)</option>
+                            <option value="JPY">JPY (¥)</option>
+                            <option value="PKR">PKR (₨)</option>
+                        </select>
+                    </div>
+                    <div id="currencyResult" class="converter-result"></div>
+                    <button class="btn-small operator" onclick="convertCurrency()">Convert</button>
+                </div>
+
+                <div class="converter-section">
+                    <h3>Temperature Converter</h3>
+                    <div class="converter-input">
+                        <input type="number" id="tempAmount" placeholder="Temperature" value="0">
+                        <select id="tempFrom">
+                            <option value="C">°C</option>
+                            <option value="F">°F</option>
+                            <option value="K">K</option>
+                        </select>
+                        <span>=</span>
+                        <select id="tempTo">
+                            <option value="F">°F</option>
+                            <option value="C">°C</option>
+                            <option value="K">K</option>
+                        </select>
+                    </div>
+                    <div id="tempResult" class="converter-result"></div>
+                    <button class="btn-small operator" onclick="convertTemperature()">Convert</button>
+                </div>
+
+                <div class="converter-section">
+                    <h3>Unit Converter</h3>
+                    <div class="converter-input">
+                        <input type="number" id="unitAmount" placeholder="Value" value="1">
+                        <select id="unitFrom">
+                            <option value="m">Meters</option>
+                            <option value="km">Kilometers</option>
+                            <option value="ft">Feet</option>
+                            <option value="mi">Miles</option>
+                            <option value="kg">Kilograms</option>
+                            <option value="lb">Pounds</option>
+                        </select>
+                        <span>=</span>
+                        <select id="unitTo">
+                            <option value="ft">Feet</option>
+                            <option value="m">Meters</option>
+                            <option value="km">Kilometers</option>
+                            <option value="mi">Miles</option>
+                            <option value="lb">Pounds</option>
+                            <option value="kg">Kilograms</option>
+                        </select>
+                    </div>
+                    <div id="unitResult" class="converter-result"></div>
+                    <button class="btn-small operator" onclick="convertUnits()">Convert</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Memory Tab -->
+        <div id="memory" class="tab-content">
+            <div class="memory-container">
+                <h3>Memory Functions</h3>
+                <div class="memory-display">
+                    <p>Memory Value: <strong id="memoryValue">0</strong></p>
+                </div>
+                <div class="memory-buttons">
+                    <button class="btn-small" onclick="memoryAdd()">M+</button>
+                    <button class="btn-small" onclick="memorySubtract()">M-</button>
+                    <button class="btn-small" onclick="memoryRecall()">MR</button>
+                    <button class="btn-small" onclick="memoryClear()">MC</button>
+                </div>
+                <h3>Calculation History</h3>
+                <div id="fullHistory" class="history-list"></div>
+                <button class="btn-small operator" onclick="clearHistory()">Clear History</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeHistory()">&times;</span>
+            <h2>Calculation History</h2>
+            <div id="modalHistory" class="history-list"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
